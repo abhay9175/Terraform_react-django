@@ -58,7 +58,7 @@ resource "aws_nat_gateway" "nat" {
   count = length(aws_subnet.private)
 
   subnet_id = aws_subnet.public.id
-  allocation_id = aws_eip.nat.id
+  allocation_id = aws_eip.nat[count.index].id
 }
 
 # Create Elastic IPs for NAT Gateway
@@ -99,7 +99,7 @@ resource "aws_route" "private" {
   count              = length(aws_subnet.private)
   route_table_id     = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id     = aws_nat_gateway.nat.id
+  nat_gateway_id     = aws_nat_gateway.nat[count.index].id
 }
   tags = {
     Name = "PrivateRouteTable-${count.index + 1}"
