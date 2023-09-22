@@ -37,6 +37,7 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.${count.index + 2}.0/24"
   availability_zone = "ap-south-1b"
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "PrivateSubnet-${count.index + 1}"
@@ -62,7 +63,7 @@ resource "aws_nat_gateway" "nat" {
 
 # Create Elastic IPs for NAT Gateway
 resource "aws_eip" "nat" {
-  count = length(aws_subnet.private)
+  count = 1
 }
 
 # Create a Route Table for Public Subnet
@@ -91,7 +92,7 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat[count.index].id
+    nat_gateway_id = aws_nat_gateway.nat.id
   }
 
   tags = {
