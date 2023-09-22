@@ -60,8 +60,10 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat[count.index].id
 }
 
-
-
+# Create Elastic IPs for NAT Gateway
+resource "aws_eip" "nat" {
+  count = length(aws_subnet.private)
+}
 
 # # Create a Route Table for Public Subnet
 # resource "aws_route_table" "public" {
