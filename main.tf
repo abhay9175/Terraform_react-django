@@ -138,6 +138,7 @@ resource "aws_instance" "public_instance" {
   ami           = "ami-08df646e18b182346" # Replace with your desired AMI ID for the public instance
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
+  map_public_ip_on_launch = true
   key_name      = aws_key_pair.example-key.key_name # Associate with the key pair
   # ... other instance configuration ...
 }
