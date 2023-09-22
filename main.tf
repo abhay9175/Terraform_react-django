@@ -92,7 +92,7 @@ resource "aws_route_table" "private" {
   # count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "PrivateRouteTable-${count.index + 1}"
+    Name = "PrivateRouteTable"
   }
   }
 resource "aws_route" "private" {
