@@ -138,7 +138,7 @@ resource "aws_instance" "public_instance" {
   ami           = "ami-08df646e18b182346" # Replace with your desired AMI ID for the public instance
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
-  map_public_ip_on_launch = true
+  associate_public_ip_address = true # Enable a public IP for this instance
   key_name      = aws_key_pair.example-key.key_name # Associate with the key pair
   # ... other instance configuration ...
 }
@@ -155,14 +155,14 @@ resource "aws_instance" "private_instance" {
 
 
 
-# Outputs for convenience
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-output "public_subnet_id" {
-  value = aws_subnet.public.id
-}
+# # Outputs for convenience
+# output "vpc_id" {
+#   value = aws_vpc.main.id
+# }
+# output "public_subnet_id" {
+#   value = aws_subnet.public.id
+# }
 
-output "private_subnet_ids" {
-  value = aws_subnet.private.*.id
-}
+# output "private_subnet_ids" {
+#   value = aws_subnet.private.*.id
+# }
