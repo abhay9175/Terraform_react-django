@@ -1,0 +1,13 @@
+# Ignore compiled files
+*.o
+*.out
+
+# Ignore log files
+*.log
+
+# Ignore directories named "build" and "dist"
+/build/
+/dist/
+terraform.tfstate
+terraform.tfstate.backup
+
