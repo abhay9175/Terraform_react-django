@@ -65,7 +65,7 @@ resource "aws_nat_gateway" "nat" {
 
 # Create Elastic IP for NAT Gateway
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 }
 
 # # Create NAT Gateway
