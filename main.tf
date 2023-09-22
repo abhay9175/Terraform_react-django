@@ -1,14 +1,3 @@
-# resource "aws_instance" "myec2" {
-#   ami                    = "ami-08df646e18b182346"
-#   instance_type          = "t2.micro"
-#   availability_zone = "ap-south-1a"
-
-#   tags = {
-#     name = "testec2"
-#   }
-# }
-
-
 # Create a VPC
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
@@ -136,6 +125,31 @@ ingress {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+}
+
+# Create an EC2 Key Pair
+resource "aws_key_pair" "example-key" {
+  key_name   = "react-django-key"
+  public_key = file("~/.ssh/id_rsa.pub") # Replace with the path to your public key file
+}
+
+# Create an EC2 Instance in the Public Subnet
+resource "aws_instance" "public_instance" {
+  ami           = "ami-08df646e18b182346" # Replace with your desired AMI ID for the public instance
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.public.id
+  key_name      = aws_key_pair.example.key_name # Associate with the key pair
+  # ... other instance configuration ...
+}
+
+# Create Two EC2 Instances in the Private Subnets
+resource "aws_instance" "private_instance" {
+  count         = 2
+  ami           = "ami-08df646e18b182346" # Replace with your desired AMI ID for the private instances
+  instance_type = "t2.micro"
+  subnet_id     = element(aws_subnet.private[*].id, count.index)
+  key_name      = aws_key_pair.example.key_name # Associate with the key pair
+  # ... other instance configuration ...
 }
 
 
