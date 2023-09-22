@@ -55,7 +55,7 @@ resource "aws_internet_gateway" "gw" {
 
 # Create NAT Gateway
 resource "aws_nat_gateway" "nat" {
-  count = length(aws_subnet.private)
+  # count = length(aws_subnet.private)
 
   subnet_id = aws_subnet.public.id
   # allocation_id = aws_eip.nat[0].id
