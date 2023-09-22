@@ -102,6 +102,13 @@ resource "aws_route" "private" {
   nat_gateway_id     = aws_nat_gateway.nat.id
 }
 
+# Create an Association between Private Subnets and the Private Route Table
+resource "aws_route_table_association" "private" {
+  count        = length(aws_subnet.private)
+  subnet_id    = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
+}
+
 # # Create a Security Group for React-django app
 # resource "aws_security_group" "React-django" {
 #   name_prefix = "React-django"
