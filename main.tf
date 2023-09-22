@@ -63,8 +63,8 @@ resource "aws_nat_gateway" "nat" {
 
 # Create Elastic IPs for NAT Gateway
 resource "aws_eip" "nat" {
-  vpc      = true
-  # count = 1
+  count  = 1  # You only need one Elastic IP for the NAT Gateway
+  domain = "vpc"
 }
 
 # Create a Route Table for Public Subnet
