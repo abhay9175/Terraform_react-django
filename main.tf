@@ -52,13 +52,13 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-# # Create NAT Gateway
-# resource "aws_nat_gateway" "nat" {
-#   count = length(aws_subnet.private)
+# Create NAT Gateway
+resource "aws_nat_gateway" "nat" {
+  count = length(aws_subnet.private)
 
-#   subnet_id = aws_subnet.private[count.index].id
-#   allocation_id = aws_eip.nat[count.index].id
-# }
+  subnet_id = aws_subnet.private[count.index].id
+  allocation_id = aws_eip.nat[count.index].id
+}
 
 
 
