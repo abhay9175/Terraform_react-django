@@ -1,12 +1,12 @@
-resource "aws_instance" "myec2" {
-  ami                    = "ami-08df646e18b182346"
-  instance_type          = "t2.micro"
-  availability_zone = "ap-south-1a"
+# resource "aws_instance" "myec2" {
+#   ami                    = "ami-08df646e18b182346"
+#   instance_type          = "t2.micro"
+#   availability_zone = "ap-south-1a"
 
-  tags = {
-    name = "testec2"
-  }
-}
+#   tags = {
+#     name = "testec2"
+#   }
+# }
 
 
 # Create a VPC
@@ -106,7 +106,7 @@ resource "aws_route_table_association" "private" {
 
 # Create a Security Group for Kubernetes Cluster
 resource "aws_security_group" "k8s_cluster_sg" {
-  name_prefix = "k8s-cluster-sg-"
+  name_prefix = "React-django-"
   vpc_id      = aws_vpc.main.id
 
   # Inbound rule
@@ -118,8 +118,15 @@ resource "aws_security_group" "k8s_cluster_sg" {
   }
  # Inbound rule
   ingress {
-    from_port   = 6443
-    to_port     = 6443
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+# Inbound rule
+ingress {
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
