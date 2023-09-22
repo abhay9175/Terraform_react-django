@@ -102,11 +102,13 @@ resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id
+  nat_gateway_id        = aws_nat_gateway.nat.id
+  destination_cidr_block = "0.0.0.0/0" # Route all traffic
 }
 
-# Create a Security Group for Kubernetes Cluster
-resource "aws_security_group" "k8s_cluster_sg" {
-  name_prefix = "React-django-"
+# Create a Security Group for React-django app
+resource "aws_security_group" "React-django" {
+  name_prefix = "React-django"
   vpc_id      = aws_vpc.main.id
 
   # Inbound rule
