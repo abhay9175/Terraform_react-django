@@ -109,34 +109,34 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
-# # Create a Security Group for React-django app
-# resource "aws_security_group" "React-django" {
-#   name_prefix = "React-django"
-#   vpc_id      = aws_vpc.main.id
+# Create a Security Group for React-django app
+resource "aws_security_group" "React-django" {
+  name_prefix = "React-django"
+  vpc_id      = aws_vpc.main.id
 
-#   # Inbound rule
-#   ingress {
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["10.0.0.0/24"]
-#   }
-#  # Inbound rule
-#   ingress {
-#     from_port   = 80
-#     to_port     = 80
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# # Inbound rule
-# ingress {
-#     from_port   = 0
-#     to_port     = 65535
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  # Inbound rule
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/24"]
+  }
+ # Inbound rule
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+# Inbound rule
+ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-# }
+}
 
 
 
