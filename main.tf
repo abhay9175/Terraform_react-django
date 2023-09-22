@@ -90,6 +90,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "private" {
   count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
+  }
 
   # route {
   #   cidr_block = "0.0.0.0/0"
@@ -104,7 +105,7 @@ resource "aws_route" "private" {
   tags = {
     Name = "PrivateRouteTable-${count.index + 1}"
   }
-}
+
 
 # Associate Private Subnets with Private Route Tables
 # resource "aws_route_table_association" "private" {
