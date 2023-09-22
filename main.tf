@@ -68,20 +68,6 @@ resource "aws_eip" "nat" {
   domain = "vpc"
 }
 
-# # Create NAT Gateway
-# resource "aws_nat_gateway" "nat" {
-#   # count = length(aws_subnet.private)
-#   subnet_id = aws_subnet.public.id
-#   depends_on = [aws_internet_gateway.gw]
-#   # allocation_id = aws_eip.nat.id
-# }
-
-# # Create Elastic IPs for NAT Gateway
-# resource "aws_eip" "nat" {
-#   count  = 1  # You only need one Elastic IP for the NAT Gateway
-#   domain = "vpc"
-# }
-
 # Create a Route Table for Public Subnet
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -103,32 +89,18 @@ resource "aws_route_table_association" "public" {
 
 # Create a Route Table for Private Subnets
 resource "aws_route_table" "private" {
-  count  = length(aws_subnet.private)
+  # count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "PrivateRouteTable-${count.index + 1}"
   }
   }
-
-  # route {
-  #   cidr_block = "0.0.0.0/0"
-  #   nat_gateway_id = aws_nat_gateway.nat[count.index].id
-  # }
 resource "aws_route" "private" {
-  count              = length(aws_subnet.private)
-  route_table_id     = aws_route_table.private[count.index].id
+  # count              = length(aws_subnet.private)
+  route_table_id     = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id     = aws_nat_gateway.nat.id
 }
-
-# Associate Private Subnets with Private Route Tables
-# resource "aws_route_table_association" "private" {
-#   count          = length(aws_subnet.private)
-#   subnet_id      = aws_subnet.private[count.index].id
-#   route_table_id = aws_route_table.private[count.index].id
-#   nat_gateway_id        = aws_nat_gateway.nat[count.index].id
-#   destination_cidr_block = "0.0.0.0/0" # Route all traffic
-# }
 
 # # Create a Security Group for React-django app
 # resource "aws_security_group" "React-django" {
