@@ -11,3 +11,5 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
+.pub
+.pem
