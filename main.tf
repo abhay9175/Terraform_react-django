@@ -139,7 +139,7 @@ resource "aws_security_group" "React-django" {
 # }
 resource "aws_key_pair" "example-key" {
   key_name   = "react-django-key"
-  public_key = file("~/.ssh/id_rsa.pub") # Replace with the path to your public key file
+  public_key = file("~/.ssh/my_rsa.pub") # Replace with the path to your public key file
 }
 
 
@@ -156,10 +156,7 @@ resource "aws_instance" "public_instance" {
 
   user_data = <<-EOF
     #!/bin/bash
-    mkdir -p ~/.ssh
-    echo "$(cat ~/.ssh/id_rsa.pub)" > ~/.ssh/authorized_keys
-    mv ~/.ssh/id_rsa.pub ~/.ssh/id_rsa.pub
-    mv ~/.ssh/id_rsa ~/.ssh/id_rsa
+    ssh-keygen
     chmod 600 ~/.ssh/id_rsa
     chmod 644 ~/.ssh/id_rsa.pub
     EOF
