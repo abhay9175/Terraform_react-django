@@ -127,10 +127,17 @@ resource "aws_security_group" "React-django" {
 
 }
 # Create an EC2 Key Pair
-resource "aws_key_pair" "example-key" {
-  key_name   = "react-django-key"
-  public_key = data.tls_public_key.example_keypair_public.openssh_key
+resource "null_resource" "generate_ssh_keys" {
+  provisioner "local-exec" {
+    command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N ''"
+  }
 }
+# Create an AWS key pair using the generated public key
+resource "aws_key_pair" "my_key_pair" {
+  key_name   = "my-key-pair"  # Replace with your desired key name
+  public_key = file("~/.ssh/id_rsa.pub")  # Path to your public SSH key
+}
+
 
 # Create an EC2 Instance in the Public Subnet
 resource "aws_instance" "public_instance" {
@@ -138,7 +145,7 @@ resource "aws_instance" "public_instance" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
   associate_public_ip_address = true # Enable a public IP for this instance
-  key_name      = aws_key_pair.example-key.key_name # Associate with the key pair
+  key_name      = aws_key_pair.my_key_pair.key_name # Associate with the key pair
   vpc_security_group_ids = [aws_security_group.React-django.id] # Attach the security group
   # ... other instance configuration ...
 }
@@ -149,7 +156,7 @@ resource "aws_instance" "private_instance" {
   ami           = "ami-0f5ee92e2d63afc18" # Replace with your desired AMI ID for the private instances
   instance_type = "t2.micro"
   subnet_id     = element(aws_subnet.private[*].id, count.index)
-  key_name      = aws_key_pair.example-key.key_name # Associate with the key pair
+  key_name      = aws_key_pair.my_key_pair.key_name # Associate with the key pair
   vpc_security_group_ids = [aws_security_group.React-django.id] # Attach the security group
   # ... other instance configuration ...
 }
