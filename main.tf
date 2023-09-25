@@ -127,20 +127,19 @@ resource "aws_security_group" "React-django" {
 
 }
 
-# Generate SSH Key Pair
-data "tls_private_key" "example_keypair" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
+resource "null_resource" "generate_ssh_keys" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
-data "tls_public_key" "example_keypair_public" {
-  private_key_pem = data.tls_private_key.example_keypair.private_key_pem
-}
-
-# Create an EC2 Key Pair
-resource "aws_key_pair" "example-key" {
-  key_name   = "react-django-key"
-  public_key = data.tls_public_key.example_keypair_public.openssh_key
+  provisioner "local-exec" {
+    command = <<-EOF
+      mkdir -p ~/.ssh
+      ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa
+      chmod 600 ~/.ssh/id_rsa
+      chmod 644 ~/.ssh/id_rsa.pub
+    EOF
+  }
 }
 
 # Create an EC2 Instance in the Public Subnet
@@ -177,14 +176,4 @@ output "public_subnet_id" {
 
 output "private_subnet_ids" {
   value = aws_subnet.private.*.id
-}
-
-# Output the Private Key (optional)
-output "private_key" {
-  value = data.tls_private_key.example_keypair.private_key_pem
-}
-
-# Output the Public Key (optional)
-output "public_key" {
-  value = data.tls_public_key.example_keypair_public.openssh_key
 }
