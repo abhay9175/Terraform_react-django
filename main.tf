@@ -126,20 +126,10 @@ resource "aws_security_group" "React-django" {
 #   }
 
 }
-
-resource "null_resource" "generate_ssh_keys" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      mkdir -p ~/.ssh
-      ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa
-      chmod 600 ~/.ssh/id_rsa
-      chmod 644 ~/.ssh/id_rsa.pub
-    EOF
-  }
+# Create an EC2 Key Pair
+resource "aws_key_pair" "example-key" {
+  key_name   = "react-django-key"
+  public_key = data.tls_public_key.example_keypair_public.openssh_key
 }
 
 # Create an EC2 Instance in the Public Subnet
