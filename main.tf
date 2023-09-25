@@ -156,14 +156,13 @@ resource "aws_instance" "public_instance" {
   key_name               = aws_key_pair.generated_key.key_name # Associate with the key pair
   vpc_security_group_ids = [aws_security_group.React-django.id] # Attach the security group
   
-  user_data = <<EOF
+  user_data = <<-EOF
               #!/bin/bash
               apt-get update
               apt-get install -y nginx
               service nginx start
               EOF
-
-  # ... other instance configuration ...
+# ... other instance configuration ...
 }
 
 
