@@ -173,12 +173,11 @@ resource "aws_instance" "private_instance" {
   vpc_security_group_ids = [aws_security_group.react_django.id] # Attach the security group
   
   user_data = <<-EOF
-              #!/bin/bash
-              apt-get update
-              apt-get install -y nginx
-              service nginx start
-              EOF
-
+    #!/bin/bash
+    sudo apt install nginx -y
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
+    EOF
 }
 
 # Outputs for convenience
