@@ -118,30 +118,32 @@ resource "aws_security_group" "React-django" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 # Inbound rule
-# ingress {
-#     from_port   = 0
-#     to_port     = 65535
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
 }
-# # Create an EC2 Key Pair
-# resource "null_resource" "generate_ssh_keys" {
-#   provisioner "local-exec" {
-#     command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/my_key_rsa -N ''"
-#   }
-# }
+
 # # Create an AWS key pair using the generated public key
 # resource "aws_key_pair" "my_key_pair" {
 #   key_name   = "my-key-pair"  # Replace with your desired key name
 #   public_key = file("~/.ssh/my_key_rsa.pub")  # Path to your public SSH key
 # }
- resource "aws_key_pair" "example" {
-  key_name   = "my-key-pair"  # Replace with your desired key name
-  public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
- }
-
+#  resource "aws_key_pair" "example" {
+#   key_name   = "my-key-pair"  # Replace with your desired key name
+#   public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
+#  }
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+  rsa_bits = "4096"
+}
+resource "aws_key_pair" "generated_key" {
+  key_name   = "my-key-pair"
+  public_key = tls_private_key.private_key.public_key_openssh
+}
 
 # Create an EC2 Instance in the Public Subnet
 resource "aws_instance" "public_instance" {
@@ -160,6 +162,8 @@ resource "aws_instance" "public_instance" {
   #   chmod 644 ~/.ssh/id_rsa.pub
   #   EOF
 }
+
+
 
 # Create Two EC2 Instances in the Private Subnets
 resource "aws_instance" "private_instance" {
