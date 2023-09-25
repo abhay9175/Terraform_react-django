@@ -174,6 +174,12 @@ resource "aws_instance" "private_instance" {
   key_name      = aws_key_pair.generated_key.key_name # Associate with the key pair
   vpc_security_group_ids = [aws_security_group.React-django.id] # Attach the security group
   # ... other instance configuration ...
+  user_data = <<-EOF
+    #!/bin/bash
+    sudo apt install nginx -y
+    systemctl start nginx
+    systemctl enable nginx
+    EOF
 }
 
 
