@@ -135,7 +135,7 @@ resource "aws_key_pair" "example-key" {
 
 # Create an EC2 Instance in the Public Subnet
 resource "aws_instance" "public_instance" {
-  ami           = "ami-08df646e18b182346" # Replace with your desired AMI ID for the public instance
+  ami           = "ami-0f5ee92e2d63afc18" # Replace with your desired AMI ID for the public instance
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
   associate_public_ip_address = true # Enable a public IP for this instance
