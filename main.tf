@@ -126,18 +126,46 @@ resource "aws_security_group" "React-django" {
 #   }
 
 }
-# Create an EC2 Key Pair
+# # Create an EC2 Key Pair
+# resource "null_resource" "generate_ssh_keys" {
+#   provisioner "local-exec" {
+#     command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/my_key_rsa -N ''"
+#   }
+# }
+# # Create an AWS key pair using the generated public key
+# resource "aws_key_pair" "my_key_pair" {
+#   key_name   = "my-key-pair"  # Replace with your desired key name
+#   public_key = file("~/.ssh/my_key_rsa.pub")  # Path to your public SSH key
+# }
+
+# Generate SSH key pair in the current working directory
 resource "null_resource" "generate_ssh_keys" {
   provisioner "local-exec" {
-    command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/my_key_rsa -N ''"
+    command = "ssh-keygen -t rsa -b 2048 -f my_key_rsa -N ''"
   }
 }
+
+# Read the content of the generated public key
+resource "null_resource" "read_public_key" {
+  triggers = {
+    key_gen_complete = "${null_resource.generate_ssh_keys.triggers["execute"]}"
+  }
+
+  provisioner "local-exec" {
+    command = "cat my_key_rsa.pub"
+  }
+}
+
+# Output the generated public key
+output "public_key" {
+  value = "${null_resource.read_public_key.stdout}"
+}
+
 # Create an AWS key pair using the generated public key
 resource "aws_key_pair" "my_key_pair" {
   key_name   = "my-key-pair"  # Replace with your desired key name
-  public_key = file("~/.ssh/my_key_rsa.pub")  # Path to your public SSH key
+  public_key = output.public_key  # Use the generated public key from the output
 }
-
 
 # Create an EC2 Instance in the Public Subnet
 resource "aws_instance" "public_instance" {
