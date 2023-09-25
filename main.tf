@@ -129,13 +129,13 @@ resource "aws_security_group" "React-django" {
 # Create an EC2 Key Pair
 resource "null_resource" "generate_ssh_keys" {
   provisioner "local-exec" {
-    command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N ''"
+    command = "ssh-keygen -t rsa -b 2048 -f ~/.ssh/my_key_rsa -N ''"
   }
 }
 # Create an AWS key pair using the generated public key
 resource "aws_key_pair" "my_key_pair" {
   key_name   = "my-key-pair"  # Replace with your desired key name
-  public_key = file("~/.ssh/id_rsa.pub")  # Path to your public SSH key
+  public_key = file("${path.module}/my_key_rsa.pub")  # Path to your public SSH key
 }
 
 
