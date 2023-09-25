@@ -177,8 +177,8 @@ resource "aws_instance" "private_instance" {
   user_data = <<-EOF
     #!/bin/bash
     sudo apt install nginx -y
-    systemctl start nginx
-    systemctl enable nginx
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
     EOF
 }
 
