@@ -155,9 +155,10 @@ resource "aws_instance" "public_instance" {
   
   user_data = <<-EOF
               #!/bin/bash
-              apt-get update
-              apt-get install -y nginx
-              service nginx start
+              sudo apt-get update
+              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+              git clone https://github.com/abhay9175/reactfrontend.git
               EOF
 
   # ... other instance configuration ...
@@ -172,12 +173,20 @@ resource "aws_instance" "private_instance" {
   key_name      = aws_key_pair.generated_key.key_name # Associate with the key pair
   vpc_security_group_ids = [aws_security_group.react_django.id] # Attach the security group
   
-  user_data = <<-EOF
-    #!/bin/bash
-    sudo apt install nginx -y
-    sudo systemctl start nginx
-    sudo systemctl enable nginx
-    EOF
+  #user_data = <<-EOF
+  #             sudo apt update
+  #             sudo apt install python3-pip
+  #             sudo apt install python3-virtualenv
+  #             virtualenv connectrdj
+  #             source connectrdj/bin/activate
+  #             pip install django
+  #             pip install djangorestframework
+  #             pip install psycopg2
+  #             cd djangobackend/
+  #             PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+  #             sed -i "s/ALLOWED_HOSTS = \[.*\]/ALLOWED_HOSTS = ['$PRIVATE_IP']/g" djangobackend/djangobackend/settings.py
+  #             python manage.py runserver 0.0.0.0:8000
+  #             EOF
 }
 
 # Outputs for convenience
@@ -191,4 +200,12 @@ output "public_subnet_id" {
 
 output "private_subnet_ids" {
   value = aws_subnet.private[*].id
+}
+
+output "public_ip" {
+  value = aws_instance.public_instance.public_ip
+}
+
+output "private_ips" {
+  value = aws_instance.private_instance[*].private_ip
 }
